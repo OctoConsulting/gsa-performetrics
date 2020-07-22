@@ -1,5 +1,7 @@
 package performetrics.controller;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +54,16 @@ public class GatlingRestController {
 		long sleepDuration = 200L + (long) (500L * Math.random());
 		Thread.sleep(sleepDuration);
 		return "done after " + sleepDuration + "ms";
+	}
+	
+	/***
+	 * Get All Status 
+	 * @return
+	 */
+	@GetMapping("/getAllSimulations")
+	public ResponseEntity<List<Simulation>> getAllSimulations() {
+		return new ResponseEntity<List<Simulation>>(performanceService.getAllSimulations(),HttpStatus.OK);
+		
 	}
 
 }

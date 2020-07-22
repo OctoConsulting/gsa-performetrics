@@ -2,6 +2,7 @@ package performetrics.service;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 
@@ -101,6 +102,14 @@ public class PerformetricService {
 		});
 
 		log.info("End of the Invoking the gatling command ::");
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public List<Simulation>getAllSimulations(){
+		return simulationRepository.findAll();
 	}
 
 }
