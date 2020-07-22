@@ -38,7 +38,6 @@ public class PerformetricService {
 		String simulationFileName = simulation.getSimulationName() + "_" + randVal;
 
 		String FileName = CURR_PATH + "/src/test/scala/performetrics/" + simulationFileName + ".scala";
-		System.out.println("Path " + CURR_PATH);
 		log.info("fileName " + FileName);
 
 		FileOutputStream outputStream = null;
