@@ -33,11 +33,12 @@ public class PerformetricService {
 	public ResponseEntity<Simulation> generateSimulator(Simulation simulation) {
 
 		Random rand = new Random();
-		int int_random = rand.nextInt(1000000000);
-		int randVal = rand.nextInt();
+		int randVal = Math.abs(rand.nextInt(Integer.MAX_VALUE));
 
 		String simulationFileName = simulation.getSimulationName() + "_" + randVal;
+
 		String FileName = CURR_PATH + "/src/test/scala/performetrics/" + simulationFileName + ".scala";
+		System.out.println("Path " + CURR_PATH);
 		log.info("fileName " + FileName);
 
 		FileOutputStream outputStream = null;
@@ -73,7 +74,7 @@ public class PerformetricService {
 			}
 		}
 		simulation.setProcessingStatus("PROCESSING");
-		simulationRepository.save(simulation);
+		// simulationRepository.save(simulation);
 
 		simulation.setSimulationFileName(simulationFileName);
 		return new ResponseEntity<Simulation>(simulation, HttpStatus.OK);
@@ -87,7 +88,7 @@ public class PerformetricService {
 		log.info("Start Invoking the gatling command ::");
 
 		CompletableFuture.runAsync(() -> {
-			final String fileName = "performetrics".concat(scalaFileName);
+			final String fileName = "performetrics.".concat(scalaFileName);
 			MavenCli cli = new MavenCli();
 			cli.doMain(new String[] { "gatling:test", "-Dgatling.simulationClass=" + fileName }, ".", System.out,
 					System.out);
