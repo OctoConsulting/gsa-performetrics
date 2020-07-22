@@ -92,6 +92,7 @@ public class PerformetricService {
 			cli.doMain(new String[] { "gatling:test", "-Dgatling.simulationClass=" + fileName }, ".", System.out,
 					System.out);
 
+			
 			Simulation simulation = simulationRepository.findById(simulationId);
 			simulation.setProcessingStatus("COMPLETED");
 			log.info("saving the info in repository ::");
