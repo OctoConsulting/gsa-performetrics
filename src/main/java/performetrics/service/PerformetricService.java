@@ -3,7 +3,9 @@ package performetrics.service;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
+import org.apache.maven.cli.MavenCli;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +13,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import performetrics.domain.ExecutionSteps;
 import performetrics.domain.Simulation;
+import performetrics.repository.GatlingRepository;
 import performetrics.utility.ScalaSimulatorGenerator;
 
 @Service
@@ -65,5 +69,28 @@ public class PerformetricService {
 
 		return new ResponseEntity<String>(HttpStatus.OK);
 	}
+	
+	@Autowired
+	private GatlingRepository gatlingRepo;
+	
+	
+	/**
+	 * 
+	 */
+	public void  invokeScalaCommand() {
+    	
+		log.info("Start Invoking the gatling command ::");
+		CompletableFuture.runAsync(() -> {
+    	    MavenCli cli = new MavenCli();
+			cli.doMain(new String[]{"gatling:test","-Dgatling.simulationClass=performetrics.AlertsSimulator"}, ".", System.out, System.out);
+			
+			ExecutionSteps executionSteps = new ExecutionSteps();//new ExecutionSteps("io","/gatling/v1/performance/io",true);
+			log.info("saving the info in repository ::");
+			gatlingRepo.save(executionSteps);
+			log.info("end of the saving the info in repository ::");
+    	});
+		
+		log.info("End of the Invoking the gatling command ::");
+    }
 
 }
