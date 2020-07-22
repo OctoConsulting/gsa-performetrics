@@ -11,39 +11,45 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 @Entity(name = "execution_steps")
 public class ExecutionSteps {
 
 	@Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name="step_id")
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "step_id")
 	private Long id;
-	
-	@Column(name="execution_name")
+
+	@Column(name = "execution_name")
 	private String executionName;
 
-	@Column(name="request_type")
+	@Column(name = "request_type")
 	private String requestType;
 
-	@Column(name="route")
+	@Column(name = "route")
 	private String route;
 
-	@OneToMany(mappedBy = "executionSteps",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@JoinColumn(name = "step_id", referencedColumnName = "step_id", nullable = false)
+	@Fetch(value = FetchMode.SUBSELECT)
 	private List<QueryParam> queryParams = new ArrayList<QueryParam>();
 
-	@OneToMany(mappedBy = "executionSteps",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@JoinColumn(name = "step_id", referencedColumnName = "step_id", nullable = false)
+	@Fetch(value = FetchMode.SUBSELECT)
 	private List<HeaderParam> authHeader = new ArrayList<>();
 
-	@Column(name="pause")
+	@Column(name = "pause")
 	private int pause;
 
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "simultation_id", nullable = false)
-	private Simulation simulation;
-	
+	// @ManyToOne(fetch = FetchType.LAZY, optional = false)
+	// @JoinColumn(name = "simultation_id", nullable = false)
+	// private Simulation simulation;
+
 	public String getExecutionName() {
 		return executionName;
 	}
@@ -100,12 +106,12 @@ public class ExecutionSteps {
 		this.id = id;
 	}
 
-	public Simulation getSimulation() {
-		return simulation;
-	}
-
-	public void setSimulation(Simulation simulation) {
-		this.simulation = simulation;
-	}
+	// public Simulation getSimulation() {
+	// return simulation;
+	// }
+	//
+	// public void setSimulation(Simulation simulation) {
+	// this.simulation = simulation;
+	// }
 
 }

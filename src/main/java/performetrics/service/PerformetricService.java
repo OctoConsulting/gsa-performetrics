@@ -2,7 +2,7 @@ package performetrics.service;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.UUID;
+import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 
 import org.apache.maven.cli.MavenCli;
@@ -13,7 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import performetrics.domain.ExecutionSteps;
 import performetrics.domain.Simulation;
 import performetrics.repository.SimulationRepository;
 import performetrics.utility.ScalaSimulatorGenerator;
@@ -27,14 +26,18 @@ public class PerformetricService {
 
 	@Autowired
 	private ScalaSimulatorGenerator scalaSimulatorGenerator;
-	
+
 	@Autowired
 	private SimulationRepository simulationRepository;
 
-	public ResponseEntity<String> generateSimulator(Simulation simulation) {
-		UUID uuid = UUID.randomUUID();
-		String FileName = CURR_PATH + "/src/test/scala/performetrics/" + simulation.getSimulationName() + "_"
-				+ uuid.toString() + ".scala";
+	public ResponseEntity<Simulation> generateSimulator(Simulation simulation) {
+
+		Random rand = new Random();
+		int int_random = rand.nextInt(1000000000);
+		int randVal = rand.nextInt();
+
+		String simulationFileName = simulation.getSimulationName() + "_" + randVal;
+		String FileName = CURR_PATH + "/src/test/scala/performetrics/" + simulationFileName + ".scala";
 		log.info("fileName " + FileName);
 
 		FileOutputStream outputStream = null;
@@ -53,7 +56,7 @@ public class PerformetricService {
 			// + "\n" + " setUp(\n" + " scn.inject(atOnceUsers(10))\n" + "
 			// ).protocols(httpProtocol)\n" + "}";
 
-			String scalaData = scalaSimulatorGenerator.scalaGeneratorData(uuid.toString(), simulation);
+			String scalaData = scalaSimulatorGenerator.scalaGeneratorData(randVal, simulation);
 
 			byte[] bytesArray = scalaData.getBytes();
 			outputStream.write(bytesArray);
@@ -69,31 +72,34 @@ public class PerformetricService {
 				log.error("Error ", ioe);
 			}
 		}
+		simulation.setProcessingStatus("PROCESSING");
+		simulationRepository.save(simulation);
 
-		return new ResponseEntity<String>(HttpStatus.OK);
+		simulation.setSimulationFileName(simulationFileName);
+		return new ResponseEntity<Simulation>(simulation, HttpStatus.OK);
 	}
-	
-		
+
 	/**
 	 * 
 	 */
-	public void  invokeScalaCommand(long simulationId,String scalaFileName) {
-    	
+	public void invokeScalaCommand(long simulationId, String scalaFileName) {
+
 		log.info("Start Invoking the gatling command ::");
-		
+
 		CompletableFuture.runAsync(() -> {
 			final String fileName = "performetrics".concat(scalaFileName);
-    	    MavenCli cli = new MavenCli();
-			cli.doMain(new String[]{"gatling:test","-Dgatling.simulationClass="+fileName}, ".", System.out, System.out);
-			
+			MavenCli cli = new MavenCli();
+			cli.doMain(new String[] { "gatling:test", "-Dgatling.simulationClass=" + fileName }, ".", System.out,
+					System.out);
+
 			Simulation simulation = simulationRepository.findById(simulationId);
 			simulation.setProcessingStatus("COMPLETED");
 			log.info("saving the info in repository ::");
 			simulationRepository.save(simulation);
 			log.info("end of the saving the info in repository ::");
-    	});
-		
+		});
+
 		log.info("End of the Invoking the gatling command ::");
-    }
+	}
 
 }

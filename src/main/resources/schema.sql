@@ -6,11 +6,11 @@ CREATE TABLE simulation (
   simulation_name VARCHAR(250) NOT NULL,
   base_url VARCHAR(1000) NOT NULL,
   scenario_name VARCHAR(1000) NOT NULL,
-  concurrent_users INT,
-  conncurrent_user_duration INT,
+  concurrent_users VARCHAR(1000),
+  conncurrent_user_duration VARCHAR(1000),
   ramp_concurrent_users_start VARCHAR(250),
   ramp_concurrent_users_end	VARCHAR(250),
-  ramp_up_duration	INT,
+  ramp_up_duration	VARCHAR(1000),
   status VARCHAR(20) default 'PROCESSING'
 );
 

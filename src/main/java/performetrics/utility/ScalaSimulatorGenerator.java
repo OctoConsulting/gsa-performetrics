@@ -3,11 +3,13 @@ package performetrics.utility;
 import java.util.List;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import performetrics.domain.ExecutionSteps;
+import performetrics.domain.HeaderParam;
 import performetrics.domain.QueryParam;
 import performetrics.domain.Simulation;
 
@@ -16,7 +18,7 @@ public class ScalaSimulatorGenerator {
 
 	private static final Logger log = LoggerFactory.getLogger(ScalaSimulatorGenerator.class);
 
-	public String scalaGeneratorData(String uuid, Simulation simulation) {
+	public String scalaGeneratorData(int uuid, Simulation simulation) {
 		String simualtionName = simulation.getSimulationName() + "_" + uuid;
 
 		StringBuilder builder = new StringBuilder();
@@ -29,10 +31,18 @@ public class ScalaSimulatorGenerator {
 		builder.append("import io.gatling.http.Predef._ \n");
 		builder.append("import io.gatling.http.protocol.HttpProtocolBuilder \n\n");
 
-		builder.append("class " + simualtionName + "extends Simulation { \n\n");
+		builder.append("class " + simualtionName + " extends Simulation { \n\n");
 
 		builder.append("val httpProtocol = http \n");
 		builder.append(".baseURL(\"" + simulation.getBaseUrl() + "\") \n\n");
+
+		this.exececutionStepBuilder(builder, simulation);
+
+		builder.append("\n\n");
+
+		this.simulationSetUp(builder, simulation);
+
+		builder.append("\n\n");
 
 		builder.append("}");
 
@@ -51,7 +61,14 @@ public class ScalaSimulatorGenerator {
 			if (CollectionUtils.isNotEmpty(exec.getQueryParams())) {
 				this.buildQueryParam(builder, exec.getQueryParams());
 			}
+
+			if (CollectionUtils.isNotEmpty(exec.getAuthHeader())) {
+				this.buildHeaderParam(builder, exec.getAuthHeader());
+			}
 			builder.append(" )");
+
+			this.builderPause(builder, exec.getPause());
+
 		}
 	}
 
@@ -88,6 +105,36 @@ public class ScalaSimulatorGenerator {
 		for (QueryParam param : params) {
 			builder.append(".queryParam(\"" + param.getParamName() + "\", \" " + param.getParamValue() + "\") \n");
 		}
+	}
+
+	public void buildHeaderParam(StringBuilder builder, List<HeaderParam> params) {
+		for (HeaderParam param : params) {
+			builder.append(".header(\"" + param.getHeaderKey() + "\", \" " + param.getHeaderValue() + "\") \n");
+		}
+	}
+
+	public void builderPause(StringBuilder builder, int pause) {
+		if (pause > 0) {
+			builder.append(".pause(" + pause + ") \n");
+		}
+	}
+
+	public void simulationSetUp(StringBuilder builder, Simulation simulation) {
+		builder.append("setUp( \n");
+		builder.append("scn.inject( \n");
+		// builder.append("atOnceUsers(" + simulation.getConstantConncurrentUsers() +
+		// "),\n");
+		if (StringUtils.isNotBlank(simulation.getConstantConncurrentUsers())) {
+			builder.append("constantUsersPerSec(" + simulation.getConstantConncurrentUsers() + ") during ("
+					+ simulation.getConstantConncurrentUserDuration() + "),\n");
+		}
+
+		if (StringUtils.isNotBlank(simulation.getRampConcurrentUsersEnd())) {
+			builder.append("rampUsersPerSec(" + simulation.getRampConcurrentUsersStart() + ") to ("
+					+ simulation.getRampConcurrentUsersEnd() + ") during (" + simulation.getRampUpDuration() + ")\n");
+		}
+		builder.append(") \n");
+		builder.append(").protocols(httpProtocol)");
 	}
 
 }

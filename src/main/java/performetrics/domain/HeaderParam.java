@@ -2,31 +2,28 @@ package performetrics.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 
-@Entity(name="header_param")
+@Entity(name = "header_param")
 public class HeaderParam {
 
 	@Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name="header_param_id")
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "header_param_id")
 	private Long id;
-	
+
 	@Column(name = "header_key")
 	private String headerKey;
 
 	@Column(name = "header_value")
 	private String headerValue;
 
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "step_id", nullable = false)
-	private ExecutionSteps executionSteps; 
-	
+	// @ManyToOne(fetch = FetchType.LAZY, optional = false)
+	// @JoinColumn(name = "step_id", nullable = false)
+	// private ExecutionSteps executionSteps;
+
 	public String getHeaderKey() {
 		return headerKey;
 	}
@@ -43,12 +40,12 @@ public class HeaderParam {
 		this.headerValue = headerValue;
 	}
 
-	public ExecutionSteps getExecutionSteps() {
-		return executionSteps;
-	}
-
-	public void setExecutionSteps(ExecutionSteps executionSteps) {
-		this.executionSteps = executionSteps;
-	}
+	// public ExecutionSteps getExecutionSteps() {
+	// return executionSteps;
+	// }
+	//
+	// public void setExecutionSteps(ExecutionSteps executionSteps) {
+	// this.executionSteps = executionSteps;
+	// }
 
 }

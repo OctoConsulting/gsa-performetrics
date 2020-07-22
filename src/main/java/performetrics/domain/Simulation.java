@@ -12,15 +12,16 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 
 @Entity(name = "simulation")
 public class Simulation {
 
 	@Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name="simultation_id")
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "simultation_id")
 	private Long id;
-	
+
 	@Column(name = "simulation_name")
 	private String simulationName;
 
@@ -30,7 +31,8 @@ public class Simulation {
 	@Column(name = "scenario_name")
 	private String scenarioName;
 
-	@OneToMany(mappedBy = "simulation",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@JoinColumn(name = "simultation_id", referencedColumnName = "simultation_id", nullable = false)
 	private List<ExecutionSteps> steps = new ArrayList<ExecutionSteps>();
 
 	@Column(name = "concurrent_users")
@@ -50,7 +52,10 @@ public class Simulation {
 
 	@Column(name = "status")
 	private String processingStatus;
-	
+
+	@Transient
+	private String simulationFileName;
+
 	public String getSimulationName() {
 		return simulationName;
 	}
@@ -137,6 +142,14 @@ public class Simulation {
 
 	public void setProcessingStatus(String processingStatus) {
 		this.processingStatus = processingStatus;
+	}
+
+	public String getSimulationFileName() {
+		return simulationFileName;
+	}
+
+	public void setSimulationFileName(String simulationFileName) {
+		this.simulationFileName = simulationFileName;
 	}
 
 }
