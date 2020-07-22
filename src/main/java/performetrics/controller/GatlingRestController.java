@@ -40,10 +40,10 @@ public class GatlingRestController {
 	@PostMapping("/invokeGatling")
     @ApiResponse(description = "to execute the maven command for gatling")
     @Operation(description = "to execute the maven command for gatling")
-    public ResponseEntity<Object> invokeGatlingCommand(@RequestParam Long simulationId) throws InterruptedException {
+    public ResponseEntity<Object> invokeGatlingCommand(@RequestParam Long simulationId,@RequestParam String scalaFileName) throws InterruptedException {
 
     
-		performanceService.invokeScalaCommand(simulationId);
+		performanceService.invokeScalaCommand(simulationId,scalaFileName);
     	
 		return new ResponseEntity<>("Successfully Triggered Gatling Execution",HttpStatus.OK);
     }

@@ -77,12 +77,14 @@ public class PerformetricService {
 	/**
 	 * 
 	 */
-	public void  invokeScalaCommand(long simulationId) {
+	public void  invokeScalaCommand(long simulationId,String scalaFileName) {
     	
 		log.info("Start Invoking the gatling command ::");
+		
 		CompletableFuture.runAsync(() -> {
+			final String fileName = "performetrics".concat(scalaFileName);
     	    MavenCli cli = new MavenCli();
-			cli.doMain(new String[]{"gatling:test","-Dgatling.simulationClass=performetrics.AlertsSimulator"}, ".", System.out, System.out);
+			cli.doMain(new String[]{"gatling:test","-Dgatling.simulationClass="+fileName}, ".", System.out, System.out);
 			
 			Simulation simulation = simulationRepository.findById(simulationId);
 			simulation.setProcessingStatus("COMPLETED");

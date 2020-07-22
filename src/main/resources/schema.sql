@@ -11,7 +11,7 @@ CREATE TABLE simulation (
   ramp_concurrent_users_start VARCHAR(250),
   ramp_concurrent_users_end	VARCHAR(250),
   ramp_up_duration	INT,
-  status VARCHAR(20) default 'NOT STARTED'
+  status VARCHAR(20) default 'PROCESSING'
 );
 
 
