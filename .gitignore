@@ -1,0 +1,28 @@
+*.class 
+*iml 
+.iml 
+.idea 
+.gitignore~ 
+.classpath 
+.project 
+.springBeans
+.settings/ 
+
+# Mobile Tools for Java (J2ME) 
+.mtj.tmp/ 
+target/*
+
+*.jar
+*.war 
+*.ear 
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml 
+hs_err_pid* 
+*.html 
+*.keystore 
+
+.idea/.name
+/target/ 
+/target/
+.metadata
+Servers/*
+/bin/
