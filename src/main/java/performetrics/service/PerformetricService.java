@@ -87,11 +87,12 @@ public class PerformetricService {
 		log.info("Start Invoking the gatling command ::");
 
 		CompletableFuture.runAsync(() -> {
-			final String fileName = "performetrics".concat(scalaFileName);
+			final String fileName = "performetrics.".concat(scalaFileName);
 			MavenCli cli = new MavenCli();
 			cli.doMain(new String[] { "gatling:test", "-Dgatling.simulationClass=" + fileName }, ".", System.out,
 					System.out);
 
+			
 			Simulation simulation = simulationRepository.findById(simulationId);
 			simulation.setProcessingStatus("COMPLETED");
 			log.info("saving the info in repository ::");
