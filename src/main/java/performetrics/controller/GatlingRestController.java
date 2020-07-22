@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -39,10 +40,10 @@ public class GatlingRestController {
 	@PostMapping("/invokeGatling")
     @ApiResponse(description = "to execute the maven command for gatling")
     @Operation(description = "to execute the maven command for gatling")
-    public ResponseEntity<Object> invokeGatlingCommand() throws InterruptedException {
+    public ResponseEntity<Object> invokeGatlingCommand(@RequestParam Long simulationId) throws InterruptedException {
 
     
-		performanceService.invokeScalaCommand();
+		performanceService.invokeScalaCommand(simulationId);
     	
 		return new ResponseEntity<>("Successfully Triggered Gatling Execution",HttpStatus.OK);
     }

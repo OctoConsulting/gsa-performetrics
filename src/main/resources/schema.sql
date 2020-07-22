@@ -10,7 +10,8 @@ CREATE TABLE simulation (
   conncurrent_user_duration INT,
   ramp_concurrent_users_start VARCHAR(250),
   ramp_concurrent_users_end	VARCHAR(250),
-  ramp_up_duration	INT
+  ramp_up_duration	INT,
+  status VARCHAR(20) default 'NOT STARTED'
 );
 
 

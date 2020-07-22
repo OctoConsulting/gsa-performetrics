@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 
 import performetrics.domain.ExecutionSteps;
 import performetrics.domain.Simulation;
-import performetrics.repository.GatlingRepository;
+import performetrics.repository.SimulationRepository;
 import performetrics.utility.ScalaSimulatorGenerator;
 
 @Service
@@ -27,6 +27,9 @@ public class PerformetricService {
 
 	@Autowired
 	private ScalaSimulatorGenerator scalaSimulatorGenerator;
+	
+	@Autowired
+	private SimulationRepository simulationRepository;
 
 	public ResponseEntity<String> generateSimulator(Simulation simulation) {
 		UUID uuid = UUID.randomUUID();
@@ -70,23 +73,21 @@ public class PerformetricService {
 		return new ResponseEntity<String>(HttpStatus.OK);
 	}
 	
-	@Autowired
-	private GatlingRepository gatlingRepo;
-	
-	
+		
 	/**
 	 * 
 	 */
-	public void  invokeScalaCommand() {
+	public void  invokeScalaCommand(long simulationId) {
     	
 		log.info("Start Invoking the gatling command ::");
 		CompletableFuture.runAsync(() -> {
     	    MavenCli cli = new MavenCli();
 			cli.doMain(new String[]{"gatling:test","-Dgatling.simulationClass=performetrics.AlertsSimulator"}, ".", System.out, System.out);
 			
-			ExecutionSteps executionSteps = new ExecutionSteps();//new ExecutionSteps("io","/gatling/v1/performance/io",true);
+			Simulation simulation = simulationRepository.findById(simulationId);
+			simulation.setProcessingStatus("COMPLETED");
 			log.info("saving the info in repository ::");
-			gatlingRepo.save(executionSteps);
+			simulationRepository.save(simulation);
 			log.info("end of the saving the info in repository ::");
     	});
 		

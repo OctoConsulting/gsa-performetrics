@@ -48,6 +48,9 @@ public class Simulation {
 	@Column(name = "ramp_up_duration")
 	private String rampUpDuration;
 
+	@Column(name = "status")
+	private String processingStatus;
+	
 	public String getSimulationName() {
 		return simulationName;
 	}
@@ -118,6 +121,22 @@ public class Simulation {
 
 	public void setRampUpDuration(String rampUpDuration) {
 		this.rampUpDuration = rampUpDuration;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getProcessingStatus() {
+		return processingStatus;
+	}
+
+	public void setProcessingStatus(String processingStatus) {
+		this.processingStatus = processingStatus;
 	}
 
 }
