@@ -74,10 +74,11 @@ public class PerformetricService {
 			}
 		}
 		simulation.setProcessingStatus("PROCESSING");
-		// simulationRepository.save(simulation);
 
-		simulation.setSimulationFileName(simulationFileName);
-		return new ResponseEntity<Simulation>(simulation, HttpStatus.OK);
+		Simulation savedSimulation = simulationRepository.save(simulation);
+
+		savedSimulation.setSimulationFileName(simulationFileName);
+		return new ResponseEntity<Simulation>(savedSimulation, HttpStatus.OK);
 	}
 
 	/**
@@ -93,7 +94,6 @@ public class PerformetricService {
 			cli.doMain(new String[] { "gatling:test", "-Dgatling.simulationClass=" + fileName }, ".", System.out,
 					System.out);
 
-			
 			Simulation simulation = simulationRepository.findById(simulationId);
 			simulation.setProcessingStatus("COMPLETED");
 			log.info("saving the info in repository ::");
@@ -103,12 +103,12 @@ public class PerformetricService {
 
 		log.info("End of the Invoking the gatling command ::");
 	}
-	
+
 	/**
 	 * 
 	 * @return
 	 */
-	public List<Simulation>getAllSimulations(){
+	public List<Simulation> getAllSimulations() {
 		return simulationRepository.findAll();
 	}
 

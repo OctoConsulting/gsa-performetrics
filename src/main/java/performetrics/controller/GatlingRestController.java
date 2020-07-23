@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,6 +22,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import performetrics.domain.Simulation;
 import performetrics.service.PerformetricService;
 
+@CrossOrigin(maxAge = 3600)
 @RestController
 @RequestMapping(value = GatlingBaseController.BasePath + "/v1/performance", produces = MediaType.APPLICATION_JSON_VALUE)
 @Tag(name = "Performance", description = "Performance Operations")
@@ -55,15 +57,16 @@ public class GatlingRestController {
 		Thread.sleep(sleepDuration);
 		return "done after " + sleepDuration + "ms";
 	}
-	
+
 	/***
-	 * Get All Status 
+	 * Get All Status
+	 * 
 	 * @return
 	 */
 	@GetMapping("/getAllSimulations")
 	public ResponseEntity<List<Simulation>> getAllSimulations() {
-		return new ResponseEntity<List<Simulation>>(performanceService.getAllSimulations(),HttpStatus.OK);
-		
+		return new ResponseEntity<List<Simulation>>(performanceService.getAllSimulations(), HttpStatus.OK);
+
 	}
 
 }
