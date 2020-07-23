@@ -56,7 +56,7 @@ public class Simulation {
 	@Column(name = "status")
 	private String processingStatus;
 
-	@Transient
+	@Column(name = "simulation_file_name")
 	private String simulationFileName;
 
 	public String getSimulationName() {

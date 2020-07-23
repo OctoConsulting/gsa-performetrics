@@ -1,5 +1,6 @@
 package performetrics.controller;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -96,6 +97,16 @@ public class GatlingRestController {
 			return new ResponseEntity<Simulation>(HttpStatus.BAD_REQUEST);
 		}
 
+	}
+	
+	@PostMapping("/moveFiles")
+	@ApiResponse(description = "to move files to another directory ")
+	@Operation(description = "to move files to another directory")
+	public ResponseEntity<Object> moveFiles(@RequestParam String scalaFileName) throws IOException {
+
+		performanceService.moveFiles(scalaFileName);
+
+		return new ResponseEntity<>("Successfully Moved the files", HttpStatus.OK);
 	}
 
 }

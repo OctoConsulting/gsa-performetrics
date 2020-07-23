@@ -1,15 +1,23 @@
 package performetrics.service;
 
+import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.maven.cli.MavenCli;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -31,6 +39,9 @@ public class PerformetricService {
 	@Autowired
 	private SimulationRepository simulationRepository;
 
+	@Value("${scala.results.path}")
+	private String destinationResultsPath;
+	
 	public ResponseEntity<Simulation> generateSimulator(Simulation simulation) {
 
 		Random rand = new Random();
@@ -74,10 +85,11 @@ public class PerformetricService {
 			}
 		}
 		simulation.setProcessingStatus("PROCESSING");
-
+		simulation.setSimulationFileName(simulationFileName);
+		
 		Simulation savedSimulation = simulationRepository.save(simulation);
 
-		savedSimulation.setSimulationFileName(simulationFileName);
+		
 		return new ResponseEntity<Simulation>(savedSimulation, HttpStatus.OK);
 	}
 
@@ -99,6 +111,12 @@ public class PerformetricService {
 			log.info("saving the info in repository ::");
 			simulationRepository.save(simulation);
 			log.info("end of the saving the info in repository ::");
+			
+			try {
+				moveFiles(scalaFileName);
+			} catch (IOException e) {
+				log.error("Error in moving the files ::",e);
+			}
 		});
 
 		log.info("End of the Invoking the gatling command ::");
@@ -114,6 +132,40 @@ public class PerformetricService {
 
 	public Simulation getSimulationById(Long id) {
 		return simulationRepository.findById(id);
+	}
+	
+	public void moveFiles(String relativeFileName) throws IOException {
+		
+		//Pattern pattern = Pattern.compile("(_)*[0-9]");
+	    //Matcher matcher = pattern.matcher(relativeFileName);
+	    //matcher.replaceFirst("-");
+		String[] fileNames = relativeFileName.split("(_)",2);
+		final String matchingFiles  = fileNames[0].concat("-") .concat(fileNames[1]);
+		log.info("Start of the move files ::");
+		File fromFile = new File("./target/gatling/"); 
+		
+		File destFile = new File(destinationResultsPath+matchingFiles.toLowerCase());
+		
+        File[] files = fromFile.listFiles(new FilenameFilter() {
+            
+           @Override
+           public boolean accept(File dir, String name) {
+               if(name.toLowerCase().startsWith(matchingFiles.toLowerCase())){
+                   return true;
+               } else {
+                   return false;
+               }
+           }
+       });
+        
+        for (File file : files) {
+        	FileUtils.copyDirectory(file, destFile);
+		}
+        
+        
+        
+        log.info("End of the move files ::"); 
+        
 	}
 
 }
