@@ -112,4 +112,8 @@ public class PerformetricService {
 		return simulationRepository.findAll();
 	}
 
+	public Simulation getSimulationById(Long id) {
+		return simulationRepository.findById(id);
+	}
+
 }

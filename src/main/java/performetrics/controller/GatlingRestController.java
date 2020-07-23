@@ -33,6 +33,11 @@ public class GatlingRestController {
 	@Autowired
 	private PerformetricService performanceService;
 
+	/**
+	 * 
+	 * @param simulation
+	 * @return
+	 */
 	@PostMapping
 	public ResponseEntity<Simulation> generateScalaPerformanceFile(@RequestBody Simulation simulation) {
 
@@ -40,6 +45,13 @@ public class GatlingRestController {
 		return performanceService.generateSimulator(simulation);
 	}
 
+	/**
+	 * 
+	 * @param simulationId
+	 * @param scalaFileName
+	 * @return
+	 * @throws InterruptedException
+	 */
 	@PostMapping("/invokeGatling")
 	@ApiResponse(description = "to execute the maven command for gatling")
 	@Operation(description = "to execute the maven command for gatling")
@@ -66,6 +78,23 @@ public class GatlingRestController {
 	@GetMapping("/getAllSimulations")
 	public ResponseEntity<List<Simulation>> getAllSimulations() {
 		return new ResponseEntity<List<Simulation>>(performanceService.getAllSimulations(), HttpStatus.OK);
+
+	}
+
+	/**
+	 * 
+	 * @param id
+	 * @return
+	 */
+	@GetMapping("/simulation")
+	public ResponseEntity<Simulation> getSimulationById(@RequestParam(value = "id", required = true) Long id) {
+		log.info("Call getSimulationById " + id);
+		Simulation simulation = performanceService.getSimulationById(id);
+		if (simulation != null) {
+			return new ResponseEntity<Simulation>(simulation, HttpStatus.OK);
+		} else {
+			return new ResponseEntity<Simulation>(HttpStatus.BAD_REQUEST);
+		}
 
 	}
 
