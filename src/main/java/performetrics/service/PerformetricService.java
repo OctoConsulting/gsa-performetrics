@@ -143,7 +143,7 @@ public class PerformetricService {
 	    //Matcher matcher = pattern.matcher(relativeFileName);
 	    //matcher.replaceFirst("-");
 		String[] fileNames = relativeFileName.split("(_)",2);
-		final String matchingFiles  = fileNames[0].concat("-") .concat(fileNames[1]);
+		final String matchingFiles  = fileNames[0].concat("-") .concat(fileNames[1]).toLowerCase();
 		log.info("Start of the move files ::");
 		File fromFile = new File("./target/gatling/"); 
 		
