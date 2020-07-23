@@ -14,7 +14,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 @Entity(name = "simulation")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Simulation {
 
 	@Id

@@ -16,7 +16,10 @@ import javax.persistence.OneToMany;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 @Entity(name = "execution_steps")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ExecutionSteps {
 
 	@Id
