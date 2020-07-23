@@ -12,7 +12,8 @@ CREATE TABLE IF NOT EXISTS simulation (
   ramp_concurrent_users_end	VARCHAR(250),
   ramp_up_duration	VARCHAR(1000),
   status VARCHAR(20) default 'PROCESSING',
-  simulation_file_name VARCHAR(500)
+  simulation_file_name VARCHAR(500),
+  simulation_results_folder_name VARCHAR(500)
 );
 
 

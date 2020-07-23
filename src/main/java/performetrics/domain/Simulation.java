@@ -58,6 +58,9 @@ public class Simulation {
 
 	@Column(name = "simulation_file_name")
 	private String simulationFileName;
+	
+	@Column(name = "simulation_results_folder_name")
+	private String simulationResultsFolderName;
 
 	public String getSimulationName() {
 		return simulationName;
@@ -153,6 +156,14 @@ public class Simulation {
 
 	public void setSimulationFileName(String simulationFileName) {
 		this.simulationFileName = simulationFileName;
+	}
+
+	public String getSimulationResultsFolderName() {
+		return simulationResultsFolderName;
+	}
+
+	public void setSimulationResultsFolderName(String simulationResultsFolderName) {
+		this.simulationResultsFolderName = simulationResultsFolderName;
 	}
 
 }

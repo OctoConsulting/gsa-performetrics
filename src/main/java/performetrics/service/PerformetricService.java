@@ -108,17 +108,20 @@ public class PerformetricService {
 
 			Simulation simulation = simulationRepository.findById(simulationId);
 			simulation.setProcessingStatus("COMPLETED");
-			log.info("saving the info in repository ::");
-			simulationRepository.save(simulation);
-			log.info("end of the saving the info in repository ::");
 			
+			String resultsFolderName = "";
 			try {
-				moveFiles(scalaFileName);
+				resultsFolderName =moveFiles(scalaFileName);
 			} catch (IOException e) {
 				log.error("Error in moving the files ::",e);
 			}
+			simulation.setSimulationResultsFolderName(resultsFolderName);
+			log.info("saving the info in repository ::");
+			simulationRepository.save(simulation);
+			log.info("end of the saving the info in repository ::");
 		});
 
+		
 		log.info("End of the Invoking the gatling command ::");
 	}
 
@@ -134,7 +137,7 @@ public class PerformetricService {
 		return simulationRepository.findById(id);
 	}
 	
-	public void moveFiles(String relativeFileName) throws IOException {
+	public String moveFiles(String relativeFileName) throws IOException {
 		
 		//Pattern pattern = Pattern.compile("(_)*[0-9]");
 	    //Matcher matcher = pattern.matcher(relativeFileName);
@@ -161,10 +164,11 @@ public class PerformetricService {
         for (File file : files) {
         	FileUtils.copyDirectory(file, destFile);
 		}
+        log.info("End of the move files, files coped to directory::{}", destFile.getAbsolutePath()); 
+        
+        return matchingFiles;
         
         
-        
-        log.info("End of the move files ::"); 
         
 	}
 
