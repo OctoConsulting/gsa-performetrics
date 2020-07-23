@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Implementation-Title: gatling
+Implementation-Version: 0.0.1-SNAPSHOT
+Built-By: nithinemanuel
+Implementation-Vendor-Id: performetrics
+Build-Jdk: 1.8.0_151
+Implementation-URL: http://projects.spring.io/spring-boot/gatling/
+Created-By: Maven Integration for Eclipse
+Implementation-Vendor: Pivotal Software, Inc.
+
